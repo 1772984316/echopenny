@@ -5,6 +5,6 @@ import 'package:echopenny/app.dart';
 void main() {
   testWidgets('App renders onboarding page', (WidgetTester tester) async {
     await tester.pumpWidget(const ProviderScope(child: EchoPennyApp()));
-    expect(find.text('Onboarding'), findsOneWidget);
+    expect(find.text('你好呀！'), findsOneWidget);
   });
 }
