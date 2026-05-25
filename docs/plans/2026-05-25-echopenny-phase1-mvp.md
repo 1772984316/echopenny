@@ -112,11 +112,11 @@ echopenny/
 
 Run:
 ```bash
-cd D:/learn-claude-code
-flutter create --org com.echopenny --project-name echopenny echopenny
+cd D:/echopenny
+D:/flutter/bin/flutter create --org com.echopenny --project-name echopenny .
 ```
 
-Expected: Flutter project created in `echopenny/`
+Expected: Flutter project created in current directory (existing docs/ preserved)
 
 - [ ] **Step 2: Add dependencies to pubspec.yaml**
 
@@ -148,7 +148,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 ```
 
-Run: `cd echopenny && flutter pub get`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter pub get`
 Expected: dependencies resolved
 
 - [ ] **Step 3: Create app.dart with basic theme and routing**
@@ -271,14 +271,14 @@ final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
 
 - [ ] **Step 6: Verify app runs**
 
-Run: `cd echopenny && flutter run -d windows` (or available device)
+Run: `cd D:/echopenny && D:/flutter/bin/flutter run -d chrome` (or available device)
 Expected: App launches showing placeholder page
 
 - [ ] **Step 7: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/
+cd D:/echopenny
+git add .
 git commit -m "feat: scaffold EchoPenny Flutter project with dependencies"
 ```
 
@@ -413,7 +413,7 @@ class Transactions extends Table {
   IntColumn get accountId => integer()();
   TextColumn get note => text().withDefault(const Constant(''))();
   TextColumn get date => text()();
-  TextColumn get createdAt => text().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   IntColumn get messageId => integer().nullable()();
 }
 ```
@@ -449,7 +449,7 @@ class Accounts extends Table {
   BoolColumn get isDefault => boolean().withDefault(const Constant(false))();
   IntColumn get sortOrder => integer()();
   BoolColumn get isHidden => boolean().withDefault(const Constant(false))();
-  TextColumn get createdAt => text().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 ```
 
@@ -491,7 +491,7 @@ class Conversations extends Table {
   TextColumn get content => text()();
   TextColumn get emotionTag => text().nullable()();
   IntColumn get tokens => integer().withDefault(const Constant(0))();
-  TextColumn get createdAt => text().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 ```
 
@@ -506,7 +506,7 @@ class Personas extends Table {
   TextColumn get systemPrompt => text()();
   TextColumn get exampleDialogs => text().withDefault(const Constant('[]'))();
   TextColumn get avatar => text().withDefault(const Constant(''))();
-  TextColumn get createdAt => text().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 ```
 
@@ -518,7 +518,7 @@ class UserProfile extends Table {
   TextColumn get key => text()();
   TextColumn get value => text()();
   IntColumn get sourceMsgId => integer().nullable()();
-  TextColumn get updatedAt => text().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column> get primaryKey => {key};
@@ -686,9 +686,12 @@ class AccountDao extends DatabaseAccessor<AppDatabase> with _$AccountDaoMixin {
     return (select(accounts)..where((a) => a.id.equals(id))).getSingleOrNull();
   }
 
-  Future<void> updateBalance(int accountId, double delta) {
-    return (update(accounts)..where((a) => a.id.equals(accountId)))
-        .write(AccountsCompanion(balance: Value.absent()));
+  Future<void> updateBalance(int accountId, double delta) async {
+    final acc = await getById(accountId);
+    if (acc == null) return;
+    final newBalance = acc.balance + delta;
+    await (update(accounts)..where((a) => a.id.equals(accountId)))
+        .write(AccountsCompanion(balance: Value(newBalance)));
   }
 
   Future<double> getTotalAssets() async {
@@ -699,8 +702,8 @@ class AccountDao extends DatabaseAccessor<AppDatabase> with _$AccountDaoMixin {
   Future<double> getNetAssets() async {
     final all = await getAllVisibleAccounts();
     final assets = all.where((a) => !a.isCredit).fold(0.0, (sum, a) => sum + a.balance);
-    final liabilities = all.where((a) => a.isCredit).fold(0.0, (sum, a) => sum + a.balance);
-    return assets + liabilities;
+    final liabilities = all.where((a) => a.isCredit).fold(0.0, (sum, a) => sum + a.balance.abs());
+    return assets - liabilities;
   }
 
   Future<int> deleteAccount(int id) {
@@ -994,8 +997,8 @@ Expected: PASS
 - [ ] **Step 10: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/core/ echopenny/test/
+cd D:/echopenny
+git add lib/core/ test/
 git commit -m "feat: add Drift database layer with all tables, DAOs, and seed data"
 ```
 
@@ -1127,7 +1130,7 @@ class LLMResponse {
   final List<ToolCall> toolCalls;
   final String finishReason;
 
-  LLM({required this.text, required this.toolCalls, required this.finishReason});
+  LLMResponse({required this.text, required this.toolCalls, required this.finishReason});
 
   bool get hasToolCalls => toolCalls.isNotEmpty;
 }
@@ -1219,8 +1222,8 @@ Expected: PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/core/llm/ echopenny/test/core/llm/
+cd D:/echopenny
+git add lib/core/llm/ test/core/llm/
 git commit -m "feat: add DeepSeek API client with function calling support"
 ```
 
@@ -1455,8 +1458,8 @@ Expected: PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/core/agent/tool_registry.dart echopenny/test/core/agent/
+cd D:/echopenny
+git add lib/core/agent/tool_registry.dart test/core/agent/
 git commit -m "feat: add tool registry with 11 function calling definitions"
 ```
 
@@ -1889,6 +1892,7 @@ class ToolHandlers {
 Create `echopenny/lib/core/agent/agent_loop.dart`:
 
 ```dart
+import 'dart:convert';
 import '../llm/deepseek_client.dart';
 import '../database/app_database.dart';
 import 'context_manager.dart';
@@ -1963,7 +1967,7 @@ class AgentLoop {
           return {
             'id': tc.id,
             'type': 'function',
-            'function': {'name': tc.name, 'arguments': '{"amount": ${tc.arguments['amount']}}'},
+            'function': {'name': tc.name, 'arguments': jsonEncode(tc.arguments)},
           };
         }).toList();
       }
@@ -2018,8 +2022,8 @@ Expected: PASS
 - [ ] **Step 8: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/core/agent/ echopenny/test/core/agent/
+cd D:/echopenny
+git add lib/core/agent/ test/core/agent/
 git commit -m "feat: add agent loop with multi-step tool calling and context compression"
 ```
 
@@ -2549,8 +2553,8 @@ Expected: App shows chat page with input bar, can type messages
 - [ ] **Step 8: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/features/chat/ echopenny/lib/shared/
+cd D:/echopenny
+git add lib/features/chat/ lib/shared/
 git commit -m "feat: add chat UI with message bubbles, typing indicator, and controller"
 ```
 
@@ -2789,8 +2793,8 @@ Expected: App shows onboarding (welcome → name → optional info → chat)
 - [ ] **Step 4: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/features/onboarding/
+cd D:/echopenny
+git add lib/features/onboarding/
 git commit -m "feat: add onboarding flow with name and optional salary input"
 ```
 
@@ -3141,8 +3145,8 @@ Expected: Settings page with API Key input, account management, persona selectio
 - [ ] **Step 5: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/features/settings/
+cd D:/echopenny
+git add lib/features/settings/
 git commit -m "feat: add settings page with API key, account management, and persona selection"
 ```
 
@@ -3232,8 +3236,8 @@ Test the complete flow:
 - [ ] **Step 4: Commit**
 
 ```bash
-cd D:/learn-claude-code
-git add echopenny/lib/
+cd D:/echopenny
+git add lib/
 git commit -m "feat: wire up full MVP flow — onboarding, API key persistence, chat + bookkeeping"
 ```
 

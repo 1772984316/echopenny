@@ -1,0 +1,37 @@
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.lock
+!pubspec.lock
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flutter build
+*.apk
+*.aab
+*.ipa
+*.zip
+
+# Local config
+.env
+.env.local
+
+# Claude Code
+.claude/worktrees/
+
+# Misc
+flutter-setup-summary.md
