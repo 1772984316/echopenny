@@ -307,6 +307,7 @@ git commit -m "feat: scaffold EchoPenny Flutter project with dependencies"
 Create `echopenny/test/core/database/daos/transaction_dao_test.dart`:
 
 ```dart
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:echopenny/core/database/app_database.dart';
@@ -396,7 +397,7 @@ void main() {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd echopenny && flutter test test/core/database/daos/transaction_dao_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/database/daos/transaction_dao_test.dart`
 Expected: FAIL — files don't exist yet
 
 - [ ] **Step 3: Create all table definitions**
@@ -803,7 +804,7 @@ class PersonaDao extends DatabaseAccessor<AppDatabase> with _$PersonaDaoMixin {
 
 - [ ] **Step 6: Run code generation**
 
-Run: `cd echopenny && dart run build_runner build --delete-conflicting-outputs`
+Run: `cd D:/echopenny && D:/flutter/bin/dart run build_runner build --delete-conflicting-outputs`
 Expected: `.g.dart` files generated for all tables and DAOs
 
 - [ ] **Step 7: Create seed data constants**
@@ -991,7 +992,7 @@ import '../constants/persona_presets.dart';
 
 - [ ] **Step 9: Run tests**
 
-Run: `cd echopenny && flutter test test/core/database/daos/transaction_dao_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/database/daos/transaction_dao_test.dart`
 Expected: PASS
 
 - [ ] **Step 10: Commit**
@@ -1106,7 +1107,7 @@ void main() {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd echopenny && flutter test test/core/llm/deepseek_client_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/llm/deepseek_client_test.dart`
 Expected: FAIL — file doesn't exist
 
 - [ ] **Step 3: Implement DeepSeek client**
@@ -1216,7 +1217,7 @@ class DeepSeekClient {
 
 - [ ] **Step 4: Run tests**
 
-Run: `cd echopenny && flutter test test/core/llm/deepseek_client_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/llm/deepseek_client_test.dart`
 Expected: PASS
 
 - [ ] **Step 5: Commit**
@@ -1275,7 +1276,7 @@ void main() {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd echopenny && flutter test test/core/agent/tool_handlers_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/agent/tool_handlers_test.dart`
 Expected: FAIL
 
 - [ ] **Step 3: Implement tool registry**
@@ -1452,7 +1453,7 @@ class ToolRegistry {
 
 - [ ] **Step 4: Run tests**
 
-Run: `cd echopenny && flutter test test/core/agent/tool_handlers_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/agent/tool_handlers_test.dart`
 Expected: PASS
 
 - [ ] **Step 5: Commit**
@@ -1550,7 +1551,7 @@ void main() {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd echopenny && flutter test test/core/agent/context_manager_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/agent/context_manager_test.dart`
 Expected: FAIL
 
 - [ ] **Step 3: Implement prompt builder**
@@ -1990,7 +1991,7 @@ class AgentLoop {
         fullMessages.add({
           'role': 'tool',
           'tool_call_id': toolCall.id,
-          'content': result.toString(),
+          'content': jsonEncode(result),
         });
 
         // Check for manual compact
@@ -2016,7 +2017,7 @@ class AgentLoop {
 
 - [ ] **Step 7: Run tests**
 
-Run: `cd echopenny && flutter test test/core/agent/context_manager_test.dart`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter test test/core/agent/context_manager_test.dart`
 Expected: PASS
 
 - [ ] **Step 8: Commit**
@@ -2469,6 +2470,7 @@ import 'chat_controller.dart';
 import 'widgets/message_bubble.dart';
 import 'widgets/chat_input.dart';
 import 'widgets/typing_indicator.dart';
+import '../../core/agent/agent_loop.dart';
 import '../../shared/providers/app_providers.dart';
 
 final chatControllerProvider = StateNotifierProvider<ChatController, ChatState>((ref) {
@@ -2547,7 +2549,7 @@ final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
 
 - [ ] **Step 7: Verify app compiles and chat UI renders**
 
-Run: `cd echopenny && flutter run -d windows`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter run -d chrome`
 Expected: App shows chat page with input bar, can type messages
 
 - [ ] **Step 8: Commit**
@@ -2787,7 +2789,7 @@ final onboardingControllerProvider = Provider<OnboardingController>((ref) {
 
 - [ ] **Step 3: Verify onboarding flow**
 
-Run: `cd echopenny && flutter run -d windows`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter run -d chrome`
 Expected: App shows onboarding (welcome → name → optional info → chat)
 
 - [ ] **Step 4: Commit**
@@ -3139,7 +3141,7 @@ class _PersonaSelectPageState extends ConsumerState<PersonaSelectPage> {
 
 - [ ] **Step 4: Verify settings page**
 
-Run: `cd echopenny && flutter run -d windows`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter run -d chrome`
 Expected: Settings page with API Key input, account management, persona selection
 
 - [ ] **Step 5: Commit**
@@ -3224,7 +3226,7 @@ final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
 
 - [ ] **Step 3: Verify full flow**
 
-Run: `cd echopenny && flutter run -d windows`
+Run: `cd D:/echopenny && D:/flutter/bin/flutter run -d chrome`
 
 Test the complete flow:
 1. App opens → onboarding (first time)
